@@ -22,16 +22,16 @@ after_success:
   - docker push valegio/multi-server
   - docker push valegio/multi-worker
 
-deploy:
-  provider: elasticbeanstalk
-  region: "us-east-2"
-  app: "Multidocker"
-  env: "Multidocker-env"
-  bucket_name: "elasticbeanstalk-us-east-2-971346109699"
-  bucket_path: "docker-multi"
-  on:
-    branch: master
-  access_key_id:
-    secure: $AWS_BEANSTALK_ACCESS_KEY
-  secret_access_key:
-    secure: "$AWS_BEANSTALK_SECRET_KEY"
+# deploy:
+#   provider: elasticbeanstalk
+#   region: "us-east-2"
+#   app: "Multidocker"
+#   env: "Multidocker-env"
+#   bucket_name: "elasticbeanstalk-us-east-2-971346109699"
+#   bucket_path: "docker-multi"
+#   on:
+#     branch: master
+#   access_key_id:
+#     secure: $AWS_BEANSTALK_ACCESS_KEY
+#   secret_access_key:
+#     secure: "$AWS_BEANSTALK_SECRET_KEY"
