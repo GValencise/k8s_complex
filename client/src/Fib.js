@@ -9,8 +9,8 @@ class Fib extends Component {
   };
 
   componentDidMount() {
-    // this.fetchValues();
-    // this.fetchIndexes();
+    this.fetchValues();
+    this.fetchIndexes();
   }
 
   async fetchValues() {
@@ -65,10 +65,10 @@ class Fib extends Component {
         </form>
 
         <h3>Indexes I have seen:</h3>
-        {/* {this.renderSeenIndexes()} */}
+        {this.renderSeenIndexes()}
 
         <h3>Calculated Values:</h3>
-        {/* {this.renderValues()} */}
+        {this.renderValues()}
       </div>
     );
   }
