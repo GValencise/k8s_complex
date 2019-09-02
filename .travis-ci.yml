@@ -2,22 +2,27 @@ language: generic
 sudo: required
 services:
   - docker
-
+env:
+  global:
+    - SHA=$(git rev-parse HEAD)
+    - CLOUDSDK_CORE_DISABLE_PROMPTS=1
 before_install:
-  - docker build -t valegio/complex_dev -f ./client/Dockerfile.dev ./client
+  - openssl aes-256-cbc -K $encrypted_0c35eebf403c_key -iv $encrypted_0c35eebf403c_iv -in service-account.json.enc -out service-account.json -d
+  - curl https://sdk.cloud.google.com | bash > /dev/null;
+  - source $HOME/google-cloud-sdk/path.bash.inc
+  - gcloud components update kubectl
+  - gcloud auth activate-service-account --key-file service-account.json
+  - gcloud config set project multi-k8s-251316
+  - gcloud config set compute/zone southamerica-east1-b
+  - gcloud container clusters get-credentials multi-cluster
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker build -t valegio/react-test -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true valegio/complex_dev npm run test -- --coverage
+  - docker run valegio/react-test npm test -- --coverage
 
-after_success:
-  - docker build -t valegio/multi-client ./client
-  # - docker build -t valegio/multi-nginx ./nginx
-  - docker build -t valegio/multi-server ./server
-  - docker build -t valegio/multi-worker ./worker
-  # Login to Docker CLI
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
-  # Take those images and push to DockerHub
-  - docker push valegio/multi-client
-  # - docker push valegio/multi-nginx
-  - docker push valegio/multi-server
-  - docker push valegio/multi-worker
+deploy:
+  provider: script
+  script: bash ./deploy.sh
+  on:
+    branch: master
